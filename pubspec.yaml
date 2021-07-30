@@ -28,6 +28,7 @@ dependencies:
   cloud_firestore: ^2.4.0
   stacked: ^2.2.3
   get_it: ^7.2.0
+  dropdown_plus: ^0.0.9
 
 
 

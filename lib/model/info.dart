@@ -25,36 +25,37 @@ class Info {
 }
 
 class Datum {
-  Datum({
-    required this.fileNumber,
-    required this.quantity,
-    required this.purpose,
-    required this.name,
-    required this.location,
-    required this.id,
-    required this.category,
-    required this.servicing,
-  });
+  Datum(
+      {this.fileNumber,
+      this.quantity,
+      this.purpose,
+      this.name,
+      this.location,
+      this.id,
+      this.category,
+      this.servicing,
+      this.purchase});
 
-  String fileNumber;
-  String quantity;
-  String purpose;
-  String name;
-  String location;
-  String id;
-  String category;
-  String servicing;
+  String? fileNumber;
+  String? quantity;
+  String? purpose;
+  String? name;
+  String? location;
+  String? id;
+  String? category;
+  String? servicing;
+  String? purchase;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        fileNumber: json["file_number"],
-        quantity: json["quantity"],
-        purpose: json["purpose"],
-        name: json["name"],
-        location: json["location"],
-        id: json["id"],
-        category: json["category"],
-        servicing: json["servicing"],
-      );
+      fileNumber: json["file_number"],
+      quantity: json["quantity"],
+      purpose: json["purpose"],
+      name: json["name"],
+      location: json["location"],
+      id: json["id"],
+      category: json["category"],
+      servicing: json["servicing"],
+      purchase: json["purchase"]);
 
   Map<String, dynamic> toJson() => {
         "file_number": fileNumber,
@@ -65,5 +66,6 @@ class Datum {
         "id": id,
         "category": category,
         "servicing": servicing,
+        "purchase": purchase
       };
 }
