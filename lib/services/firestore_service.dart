@@ -7,19 +7,6 @@ import 'package:gp_management/model/jurisdictions.dart';
 class FirestoreService {
   var firestoreInstance = FirebaseFirestore.instance;
 
-  // Add data
-  Future getData() async {
-    var firebaseDb1 = await firestoreInstance
-        .collection('util')
-        .doc('jurisdiction_data')
-        .get();
-    var firebaseDb2 =
-        await firestoreInstance.collection('data').doc('ps_seppa').get();
-    print(json.encode(firebaseDb1.data()));
-    print(json.encode(firebaseDb2.data()));
-    return firebaseDb1.data();
-  }
-
   Future<Info> getDataForJurisdiction(String jurisdiction) async {
     var firebaseDb =
         await firestoreInstance.collection('data').doc(jurisdiction).get();
@@ -47,7 +34,27 @@ class FirestoreService {
     await firestoreInstance
         .collection('data')
         .doc(jurisdiction)
-        .update({'data': infoList.toJson()});
+        .update(infoList.toJson());
     return true;
+  }
+
+  Future<Map<String, dynamic>> searchInfo(
+      String location, String fileNumber) async {
+    Jurisdictions jurisdictions = await getJurisdictionList();
+    String jurisdiction = jurisdictions.jurisdictions
+        .firstWhere((element) => element.name == location)
+        .jurisdiction;
+    final firebaseDb =
+        await firestoreInstance.collection('data').doc(jurisdiction).get();
+    final dataList = infoFromJson(json.encode(firebaseDb.data()));
+    bool found = false;
+    Datum datum = dataList.data.firstWhere((element) {
+      if (element.fileNumber == fileNumber) {
+        found = true;
+        return true;
+      }
+      return false;
+    }, orElse: () => Datum());
+    return {'found': found, 'data': datum.toJson()};
   }
 }

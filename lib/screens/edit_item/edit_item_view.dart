@@ -1,42 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gp_management/model/info.dart';
 import 'package:stacked/stacked.dart';
 import 'package:sweetsheet/sweetsheet.dart';
 
-import 'add_item_viewmodel.dart';
+import 'edit_item_viewmodel.dart';
 
-class AddItemView extends StatelessWidget {
-  AddItemView({Key? key}) : super(key: key);
-
+class EditItemView extends StatelessWidget {
+  EditItemView(
+      {Key? key,
+      required this.prefill,
+      required this.info,
+      required this.index})
+      : super(key: key);
+  final Datum prefill;
+  final Info info;
+  final int index;
   final SweetSheet _sweetSheet = SweetSheet();
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<AddItemViewModel>.reactive(
-      viewModelBuilder: () => AddItemViewModel(),
-      onModelReady: (model) => model.init(),
+    return ViewModelBuilder<EditItemViewModel>.reactive(
+      viewModelBuilder: () => EditItemViewModel(),
+      onModelReady: (model) => model.init(prefill, info, index),
       builder: (
         BuildContext context,
-        AddItemViewModel model,
+        EditItemViewModel model,
         Widget? child,
       ) {
         return WillPopScope(
           onWillPop: () async {
             late bool popOrNot;
-            await _sweetSheet.show(
+            _sweetSheet.show(
               context: context,
-              title: Text(
-                "Warning",
-                style: GoogleFonts.oxygen(),
-              ),
-              description: Text(
-                'You will lose all the data you have added. Go back?',
-                style: GoogleFonts.oxygen(),
-              ),
-              color: CustomSheetColor(
-                  main: Theme.of(context).primaryColor,
-                  accent: Theme.of(context).accentColor,
-                  icon: Colors.white),
+              title: Text("Warning"),
+              description:
+                  Text('You will lose all the data you have added. Go back?'),
+              color: SweetSheetColor.NICE,
               // icon: Icons.portable_wifi_off,
               positive: SweetSheetAction(
                 onPressed: () {
@@ -55,7 +55,6 @@ class AddItemView extends StatelessWidget {
               ),
             );
             return false;
-            //return popOrNot;
           },
           child: Scaffold(
             appBar: AppBar(
@@ -80,6 +79,7 @@ class AddItemView extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: TextFormField(
+                                    initialValue: model.dataModel.name,
                                     decoration: InputDecoration(
                                       labelText: 'Name',
                                       border: OutlineInputBorder(
@@ -99,6 +99,7 @@ class AddItemView extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: TextFormField(
+                                    initialValue: model.dataModel.fileNumber,
                                     decoration: InputDecoration(
                                       labelText: 'File no',
                                       border: OutlineInputBorder(
@@ -145,6 +146,7 @@ class AddItemView extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: TextFormField(
+                                    initialValue: model.dataModel.quantity,
                                     keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                       labelText: 'Quantity',
@@ -168,6 +170,7 @@ class AddItemView extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: TextFormField(
                               maxLines: null,
+                              initialValue: model.dataModel.purpose,
                               decoration: InputDecoration(
                                 labelText: 'Purpose',
                                 border: OutlineInputBorder(
@@ -181,46 +184,11 @@ class AddItemView extends StatelessWidget {
                                   model.dataModel.purpose = value,
                             ),
                           ),
-                          Row(
-                            children: [
-                              Row(
-                                children: [
-                                  Switch(
-                                      value: model.addServicingDate,
-                                      onChanged: model.setServicingBool),
-                                  Text('Add servicing date')
-                                ],
-                              ),
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: TextFormField(
-                                    enabled: model.addServicingDate,
-                                    readOnly: true,
-                                    onTap: () =>
-                                        model.selectServicingDate(context),
-                                    controller: model.servicingDataController,
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                      labelText: 'Next servicing date',
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                    ),
-                                    validator: (value) {
-                                      value = value ?? "";
-                                      if (value.isEmpty &&
-                                          model.addServicingDate)
-                                        return "Enter servicing date";
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: DropdownButtonFormField<String>(
+                              value: model.dataModel.category,
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8)),
@@ -246,6 +214,7 @@ class AddItemView extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: DropdownButtonFormField<String>(
+                              value: model.dataModel.location,
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8)),
@@ -264,6 +233,34 @@ class AddItemView extends StatelessWidget {
                                 );
                               }).toList(),
                             ),
+                          ),
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextFormField(
+                                    enabled: model.showServicingDate,
+                                    readOnly: true,
+                                    onTap: () =>
+                                        model.selectServicingDate(context),
+                                    controller: model.servicingDataController,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      labelText: 'Next servicing date',
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                    ),
+                                    validator: (value) {
+                                      value = value ?? "";
+                                      if (value.isEmpty)
+                                        return "Enter servicing date";
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           // Padding(
                           //   padding: const EdgeInsets.all(8.0),

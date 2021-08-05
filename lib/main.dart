@@ -2,9 +2,11 @@ import 'dart:math';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:gp_management/model/info.dart';
 import 'package:gp_management/model/jurisdictions.dart';
 import 'package:gp_management/screens/add_item/add_item_view.dart';
+import 'package:gp_management/screens/view_items/view_items_view.dart';
 
 import 'services/firestore_service.dart';
 import 'services/setup_locator.dart';
@@ -23,9 +25,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: SafeArea(child: MyHomePage()),
+          primaryColor: Color(0xff556FB5),
+          accentColor: Color(0xff7189BF),
+          buttonColor: Color(0xff556FB5),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Color(0xff556FB5)))),
+          textTheme: GoogleFonts.oxygenTextTheme(Theme.of(context).textTheme),
+          appBarTheme: AppBarTheme(
+              textTheme: ThemeData.light().textTheme.copyWith(
+                    headline6: GoogleFonts.oxygen(
+                        fontWeight: FontWeight.bold, fontSize: 18),
+                  ))),
+      home: SafeArea(child: ViewItemsView()),
     );
   }
 }

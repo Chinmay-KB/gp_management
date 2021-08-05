@@ -4,40 +4,41 @@ import 'package:gp_management/model/jurisdictions.dart';
 import 'package:gp_management/services/firestore_service.dart';
 import 'package:gp_management/services/setup_locator.dart';
 import 'package:stacked/stacked.dart';
-import 'package:uuid/uuid.dart';
 
-class Category {
-  final String name;
-  final bool servicingDate;
-
-  Category(this.name, this.servicingDate);
-}
-
-class AddItemViewModel extends BaseViewModel {
+class EditItemViewModel extends BaseViewModel {
   var formKey = GlobalKey<FormState>();
   var dataModel = Datum();
   TextEditingController purchaseDataController = TextEditingController();
   TextEditingController servicingDataController = TextEditingController();
   List<String> locations = [];
   late Jurisdictions jurisdictions;
+  late Info prePopulatedInfo;
+  late int prePopulatedIndex;
   final firestoreService = locator<FirestoreService>();
+  late final bool showServicingDate;
 
-  final category = ['Furniture', 'Vehicle', 'Stationery', 'Electronics'];
-  bool addServicingDate = false;
-
-  init() async {
+  init(Datum prefill, Info info, int index) async {
     setBusy(true);
+    dataModel = prefill;
+    prePopulatedIndex = index;
+    prePopulatedInfo = info;
     jurisdictions = await firestoreService.getJurisdictionList();
     jurisdictions.jurisdictions
         .forEach((element) => locations.add(element.name));
-    dataModel.id = Uuid().v4();
     print("finished");
-    setBusy(false);
-  }
+    DateTime picked =
+        DateTime.fromMillisecondsSinceEpoch(int.parse(dataModel.purchase!));
+    purchaseDataController.text =
+        "${picked.toLocal().day}/${picked.toLocal().month}/${picked.toLocal().year}";
+    picked =
+        DateTime.fromMillisecondsSinceEpoch(int.parse(dataModel.servicing!));
+    if (prefill.servicing == "0") showServicingDate = false;
 
-  void setServicingBool(bool val) {
-    addServicingDate = val;
-    notifyListeners();
+    servicingDataController.text = (!showServicingDate)
+        ? "N/A"
+        : "${picked.toLocal().day}/${picked.toLocal().month}/${picked.toLocal().year}";
+
+    setBusy(false);
   }
 
   selectPurchaseDate(BuildContext context) async {
@@ -74,15 +75,14 @@ class AddItemViewModel extends BaseViewModel {
 
   submitData(BuildContext context) async {
     setBusy(true);
-    if (!addServicingDate) dataModel.servicing = '0';
     String jurisdiction = jurisdictions.jurisdictions
         .firstWhere((element) => element.name == dataModel.location)
         .jurisdiction;
-
-    await firestoreService.addData(jurisdiction, dataModel);
+    prePopulatedInfo.data[prePopulatedIndex] = dataModel;
+    await firestoreService.editData(jurisdiction, prePopulatedInfo);
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Data added successfully!")),
+      SnackBar(content: Text("Data edited successfully!")),
     );
     setBusy(false);
   }
