@@ -32,7 +32,7 @@ class EditItemViewModel extends BaseViewModel {
         "${picked.toLocal().day}/${picked.toLocal().month}/${picked.toLocal().year}";
     picked =
         DateTime.fromMillisecondsSinceEpoch(int.parse(dataModel.servicing!));
-    if (prefill.servicing == "0") showServicingDate = false;
+    showServicingDate = (prefill.servicing == "0") ? false : true;
 
     servicingDataController.text = (!showServicingDate)
         ? "N/A"
