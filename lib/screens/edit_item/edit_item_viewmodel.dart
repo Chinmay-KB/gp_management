@@ -86,4 +86,19 @@ class EditItemViewModel extends BaseViewModel {
     );
     setBusy(false);
   }
+
+  deleteData(BuildContext context) async {
+    setBusy(true);
+    String jurisdiction = jurisdictions.jurisdictions
+        .firstWhere((element) => element.name == dataModel.location)
+        .jurisdiction;
+
+    prePopulatedInfo.data.removeAt(prePopulatedIndex);
+    await firestoreService.editData(jurisdiction, prePopulatedInfo);
+    Navigator.of(context).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Data edited successfully!")),
+    );
+    setBusy(false);
+  }
 }

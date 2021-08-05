@@ -296,11 +296,16 @@ class InfoCard extends StatelessWidget {
                   TextButton.icon(
                       onPressed: () {
                         Navigator.of(context).pop();
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => EditItemView(
-                                prefill: data,
-                                info: model.info,
-                                index: index)));
+                        Navigator.of(context)
+                            .push(
+                              MaterialPageRoute(
+                                builder: (context) => EditItemView(
+                                    prefill: data,
+                                    info: model.info,
+                                    index: index),
+                              ),
+                            )
+                            .then((value) => model.fetchDataForJurisdiction());
                       },
                       style: ButtonStyle(
                           padding:

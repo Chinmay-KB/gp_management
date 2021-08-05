@@ -279,18 +279,49 @@ class EditItemView extends StatelessWidget {
                           //     onSaved: (value) => model.dataModel.category = value,
                           //   ),
                           // ),
-                          ElevatedButton(
-                            onPressed: () {
-                              // Validate returns true if the form is valid, or false otherwise.
-                              if (model.formKey.currentState!.validate()) {
-                                model.formKey.currentState!.save();
-                                model.submitData(context);
-                                // If the form is valid, display a snackbar. In the real world,
-                                // you'd often call a server or save the information in a database.
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Validate returns true if the form is valid, or false otherwise.
+                                  if (model.formKey.currentState!.validate()) {
+                                    model.formKey.currentState!.save();
+                                    model.submitData(context);
+                                    // If the form is valid, display a snackbar. In the real world,
+                                    // you'd often call a server or save the information in a database.
 
-                              }
-                            },
-                            child: const Text('Submit'),
+                                  }
+                                },
+                                child: const Text('Submit'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  _sweetSheet.show(
+                                    context: context,
+                                    title: Text("Warning"),
+                                    description: Text(
+                                        'Data once deleted can not be retrieved.'),
+                                    color: SweetSheetColor.WARNING,
+                                    positive: SweetSheetAction(
+                                      onPressed: () async {
+                                        await model.deleteData(context);
+                                        // Navigator.of(context).pop();
+                                        Navigator.of(context).pop();
+                                      },
+                                      title: 'Yes',
+                                    ),
+                                    negative: SweetSheetAction(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      title: 'No',
+                                    ),
+                                  );
+                                },
+                                child: const Text('Delete'),
+                              ),
+                            ],
                           ),
                         ],
                       ),
