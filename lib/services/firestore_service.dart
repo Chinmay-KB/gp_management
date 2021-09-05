@@ -38,23 +38,26 @@ class FirestoreService {
     return true;
   }
 
-  Future<Map<String, dynamic>> searchInfo(
-      String location, String fileNumber) async {
-    Jurisdictions jurisdictions = await getJurisdictionList();
-    String jurisdiction = jurisdictions.jurisdictions
-        .firstWhere((element) => element.name == location)
-        .jurisdiction;
-    final firebaseDb =
-        await firestoreInstance.collection('data').doc(jurisdiction).get();
-    final dataList = infoFromJson(json.encode(firebaseDb.data()));
-    bool found = false;
-    Datum datum = dataList.data.firstWhere((element) {
-      if (element.fileNumber == fileNumber) {
-        found = true;
-        return true;
-      }
-      return false;
-    }, orElse: () => Datum());
-    return {'found': found, 'data': datum.toJson()};
+  Future<Map<String, dynamic>> searchInfo(String id, String location) async {
+    try {
+      Jurisdictions jurisdictions = await getJurisdictionList();
+      String jurisdiction = jurisdictions.jurisdictions
+          .firstWhere((element) => element.name == location)
+          .jurisdiction;
+      final firebaseDb =
+          await firestoreInstance.collection('data').doc(jurisdiction).get();
+      final dataList = infoFromJson(json.encode(firebaseDb.data()));
+      bool found = false;
+      Datum datum = dataList.data.firstWhere((element) {
+        if (element.id == id) {
+          found = true;
+          return true;
+        }
+        return false;
+      }, orElse: () => Datum());
+      return {'found': found, 'data': datum.toJson()};
+    } on Exception catch (_) {
+      return {'found': false, 'data': Datum()};
+    }
   }
 }

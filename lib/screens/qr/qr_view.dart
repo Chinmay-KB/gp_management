@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gp_management/screens/qr/qr_scan_details.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrView extends StatefulWidget {
@@ -23,53 +24,48 @@ class _QrViewState extends State<QrView> {
 
   @override
   Widget build(BuildContext context) {
-    qrWidget = QRView(
-      key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
-    );
     return Scaffold(
       appBar: AppBar(
-        title: Text("Scanner"),
-      ),
-      body: Column(
-        children: [
-          scanOver
-              ? Container()
-              : Flexible(
-                  flex: 5,
-                  child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 800),
-                    child: qrWidget,
-                  ),
-                ),
-          scanOver
-              ? Text(readData)
-              : Flexible(flex: 2, child: Text("Scan something"))
+        title: Text("Scan QR Code"),
+        actions: [
+          GestureDetector(
+            child: Icon(Icons.flash_on_rounded),
+            onTap: () async {
+              await controller.toggleFlash();
+            },
+          ),
+          GestureDetector(
+              onTap: () async {
+                await controller.flipCamera();
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Icon(Icons.flip_camera_android),
+              ))
         ],
+      ),
+      body: QRView(
+        key: qrKey,
+        onQRViewCreated: _onQRViewCreated,
+        overlay: QrScannerOverlayShape(
+            borderColor: Theme.of(context).primaryColor, borderRadius: 8),
       ),
     );
   }
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) async {
-      // await controller.pauseCamera();
-      //do something
-      if (scanData.code.length > 10) {
-        if (scanData.code.substring(0, 10) == 'hfy376syds') {
-          setState(() {
-            readData = 'Found a matching QR ' + scanData.code;
-            qrWidget = Container();
-            scanOver = true;
-          });
-        } else
-          setState(() {
-            readData = 'Not valid QR but is lengthy';
-          });
-      } else
+    controller.scannedDataStream.listen(
+      (scanData) async {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    QrScanInfoScreen(code: scanData.code)));
         setState(() {
-          readData = 'Not valid QR';
+          readData = scanData.code;
         });
-    });
+      },
+    );
   }
 }

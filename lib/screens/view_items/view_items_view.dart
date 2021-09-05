@@ -163,7 +163,7 @@ class InfoCard extends StatelessWidget {
 
       Share.shareFiles([dirPath],
           text:
-              '${data.name}\nLocation-${data.location}\nItem Id-${data.id}\nFile No-${data.fileNumber}');
+              '${data.name}\nLocation-${data.location}\nFile No-${data.fileNumber}');
     } catch (e) {
       print(e.toString());
     }
@@ -221,11 +221,7 @@ class InfoCard extends StatelessWidget {
                   child: Container(
                     color: Colors.white,
                     child: QrImage(
-                      data: 'hfy376syds' +
-                          {
-                            'location': data.location,
-                            'file_no': data.fileNumber
-                          }.toString(),
+                      data: '${data.id!}`${data.location}',
                       version: QrVersions.auto,
                       size: 300.0,
                     ),
@@ -244,10 +240,6 @@ class InfoCard extends StatelessWidget {
                 spacing: 16,
                 children: [
                   Text('File no - ${data.fileNumber}',
-                      style: TextStyle(
-                        fontSize: 16,
-                      )),
-                  Text('Item Id - ${data.id}',
                       style: TextStyle(
                         fontSize: 16,
                       )),

@@ -296,13 +296,17 @@ class EditItemView extends StatelessWidget {
                                 child: const Text('Submit'),
                               ),
                               ElevatedButton(
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.redAccent)),
                                 onPressed: () {
                                   _sweetSheet.show(
                                     context: context,
                                     title: Text("Warning"),
                                     description: Text(
                                         'Data once deleted can not be retrieved.'),
-                                    color: SweetSheetColor.WARNING,
+                                    color: SweetSheetColor.DANGER,
                                     positive: SweetSheetAction(
                                       onPressed: () async {
                                         await model.deleteData(context);
