@@ -51,7 +51,7 @@ class SplashViewModel extends BaseViewModel {
             userData: UserData(
               email: _userData.email!,
               name: _userData.displayName!,
-              jurisdiction: [],
+              jurisdictions: [],
               superuser: false,
               uid: _userData.uid,
             ));

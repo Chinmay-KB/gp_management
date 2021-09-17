@@ -36,7 +36,7 @@ class SuperUserItemsView extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              _userService.userData!.name,
+              'GP Management',
               // style: TextStyle(
               //   color: Colors.white,
               // ),

@@ -44,4 +44,16 @@ class Jurisdiction {
         "jurisdiction": jurisdiction,
         "name": name
       };
+
+  factory Jurisdiction.fromMap(Map<String, dynamic> json) => Jurisdiction(
+        access: List<String>.from(json["access"].map((x) => x)),
+        jurisdiction: json["jurisdiction"],
+        name: json["name"],
+      );
+
+  Map<String, dynamic> toMap() => {
+        "access": List<dynamic>.from(access!.map((x) => x)),
+        "jurisdiction": jurisdiction,
+        "name": name,
+      };
 }

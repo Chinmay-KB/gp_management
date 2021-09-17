@@ -25,19 +25,23 @@ class Requests {
 class Request {
   Request({
     required this.jurisdiction,
+    required this.jurisdictionName,
     required this.user,
   });
 
   String jurisdiction;
   UserData user;
+  String jurisdictionName;
 
   factory Request.fromMap(Map<String, dynamic> json) => Request(
         jurisdiction: json["jurisdiction"],
+        jurisdictionName: json["jurisdiction_name"],
         user: UserData.fromMap(json["user"]),
       );
 
   Map<String, dynamic> toMap() => {
         "jurisdiction": jurisdiction,
         "user": user.toMap(),
+        "jurisdiction_name": jurisdictionName
       };
 }
