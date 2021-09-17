@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gp_management/model/info.dart';
 import 'package:gp_management/model/jurisdictions.dart';
+import 'package:gp_management/model/requests.dart';
+import 'package:gp_management/model/userdata.dart';
 
 class FirestoreService {
   var firestoreInstance = FirebaseFirestore.instance;
@@ -59,5 +61,80 @@ class FirestoreService {
     } on Exception catch (_) {
       return {'found': false, 'data': Datum()};
     }
+  }
+
+  /// Check if the user exists on the database or not.
+  Future<bool> checkUserExists(String uid) async {
+    final _doc = await firestoreInstance.collection('users').doc(uid).get();
+    return _doc.exists;
+  }
+
+  /// Creates a new user document for a new user
+  Future<void> createNewUser(
+      {required String uid, required UserData userData}) async {
+    await firestoreInstance
+        .collection('users')
+        .withConverter<UserData>(
+            fromFirestore: (snapshot, _) => UserData.fromMap(snapshot.data()!),
+            toFirestore: (model, _) => model.toMap())
+        .doc(uid)
+        .set(userData);
+  }
+
+  /// Creates a new user document for a new user
+  Future<DocumentSnapshot<UserData>> getUserData({required String uid}) async =>
+      firestoreInstance
+          .collection('users')
+          .withConverter<UserData>(
+              fromFirestore: (snapshot, _) =>
+                  UserData.fromMap(snapshot.data()!),
+              toFirestore: (model, _) => model.toMap())
+          .doc(uid)
+          .get();
+
+  Future<void> createNewRequest({required Request request}) async {
+    await firestoreInstance
+        .collection('users')
+        .withConverter<Requests>(
+            fromFirestore: (snapshot, _) => Requests.fromMap(snapshot.data()!),
+            toFirestore: (model, _) => model.toMap())
+        .doc('pending_requests')
+        .update(
+      {
+        "requests": FieldValue.arrayUnion(
+          [request.toMap()],
+        ),
+      },
+    );
+  }
+
+  Future<void> removePendingRequest({required Request request}) async {
+    await firestoreInstance
+        .collection('users')
+        .withConverter<Requests>(
+            fromFirestore: (snapshot, _) => Requests.fromMap(snapshot.data()!),
+            toFirestore: (model, _) => model.toMap())
+        .doc('pending_requests')
+        .update(
+      {
+        "requests": FieldValue.arrayRemove(
+          [request.toMap()],
+        ),
+      },
+    );
+  }
+
+  /// Creates a new user document for a new user
+  Future<void> acceptUserRequest(
+      {required String uid, required String jurisdiction}) async {
+    await firestoreInstance
+        .collection('users')
+        .withConverter<UserData>(
+            fromFirestore: (snapshot, _) => UserData.fromMap(snapshot.data()!),
+            toFirestore: (model, _) => model.toMap())
+        .doc(uid)
+        .update({
+      'jurisdiction': FieldValue.arrayUnion([jurisdiction])
+    });
   }
 }

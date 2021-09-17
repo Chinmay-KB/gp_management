@@ -9,29 +9,28 @@ import 'package:gp_management/model/info.dart';
 import 'package:gp_management/screens/add_item/add_item_view.dart';
 import 'package:gp_management/screens/edit_item/edit_item_view.dart';
 import 'package:gp_management/screens/qr/qr_view.dart';
+import 'package:gp_management/screens/superuser_view/superuser_items_viewmodel.dart';
 import 'package:gp_management/services/user_service.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
-import 'package:sweetsheet/sweetsheet.dart';
 
 import '../../app.locator.dart';
-import 'view_items_viewmodel.dart';
 
-class ViewItemsView extends StatelessWidget {
-  ViewItemsView({Key? key}) : super(key: key);
+class SuperUserItemsView extends StatelessWidget {
+  SuperUserItemsView({Key? key}) : super(key: key);
   final _userService = locator<UserService>();
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<ViewItemsViewModel>.reactive(
-      viewModelBuilder: () => ViewItemsViewModel(),
+    return ViewModelBuilder<SuperUserItemsViewModel>.reactive(
+      viewModelBuilder: () => SuperUserItemsViewModel(),
       onModelReady: (model) => model.init(),
       builder: (
         BuildContext context,
-        ViewItemsViewModel model,
+        SuperUserItemsViewModel model,
         Widget? child,
       ) {
         return Scaffold(
@@ -146,7 +145,7 @@ class ViewItemsView extends StatelessWidget {
 class InfoCard extends StatelessWidget {
   InfoCard({Key? key, required this.index, required this.model})
       : super(key: key);
-  final ViewItemsViewModel model;
+  final SuperUserItemsViewModel model;
   final int index;
   final GlobalKey globalKey = new GlobalKey();
 

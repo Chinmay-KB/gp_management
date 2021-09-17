@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:gp_management/app.locator.dart';
 import 'package:gp_management/model/info.dart';
 import 'package:gp_management/services/firestore_service.dart';
-import 'package:gp_management/services/setup_locator.dart';
 import 'package:stacked/stacked.dart';
 
 class QrViewModel extends BaseViewModel {

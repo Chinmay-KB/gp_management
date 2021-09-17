@@ -4,7 +4,7 @@ import 'package:gp_management/model/jurisdictions.dart';
 import 'package:gp_management/services/firestore_service.dart';
 import 'package:stacked/stacked.dart';
 
-class ViewItemsViewModel extends BaseViewModel {
+class SuperUserItemsViewModel extends BaseViewModel {
   late Jurisdictions jurisdictions;
   List<String> locations = [];
   bool loading = false;

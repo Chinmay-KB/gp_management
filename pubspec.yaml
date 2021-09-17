@@ -27,6 +27,7 @@ dependencies:
   firebase_auth: ^3.0.1
   cloud_firestore: ^2.4.0
   stacked: ^2.2.3
+  stacked_services: ^0.8.13
   get_it: ^7.2.0
   qr_flutter: ^4.0.0
   qr_code_scanner: ^0.5.2
@@ -36,6 +37,9 @@ dependencies:
   share_plus: ^2.1.4
   google_fonts: ^2.1.0
   uuid: ^3.0.4
+  google_sign_in: ^5.1.0
+  shared_preferences: ^2.0.7
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -43,9 +47,9 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   change_app_package_name: ^1.0.0
+  stacked_generator: 
+  build_runner: ^2.1.2
   
 
 # For information on the generic Dart part of this file, see the

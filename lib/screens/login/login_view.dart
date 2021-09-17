@@ -15,13 +15,7 @@ class LoginView extends StatelessWidget {
         LoginViewModel model,
         Widget? child,
       ) {
-        return Scaffold(
-          body: Center(
-            child: Text(
-              'LoginView',
-            ),
-          ),
-        );
+        return Text('a');
       },
     );
   }
