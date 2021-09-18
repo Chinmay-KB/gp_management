@@ -39,7 +39,17 @@ class ViewItemsView extends StatelessWidget {
                 children: [
                   ListTile(
                     onTap: model.navigateToRequestView,
-                    title: Text('Request Access'),
+                    title: Text('Request Jurisdiction Access'),
+                  ),
+                  Divider(),
+                  ListTile(
+                    onTap: model.navigateToRequestView,
+                    title: Text('About the app'),
+                  ),
+                  Divider(),
+                  ListTile(
+                    onTap: model.logout,
+                    title: Text('Logout'),
                   )
                 ],
               ),
@@ -160,11 +170,16 @@ class ViewItemsView extends StatelessWidget {
 }
 
 class InfoCard extends StatelessWidget {
-  InfoCard({Key? key, required this.index, required this.model})
+  InfoCard(
+      {Key? key,
+      required this.index,
+      required this.model,
+      this.isSuperUser = false})
       : super(key: key);
   final ViewItemsViewModel model;
   final int index;
   final GlobalKey globalKey = new GlobalKey();
+  bool isSuperUser;
 
   Future<void> _captureAndSharePng() async {
     try {

@@ -1,6 +1,7 @@
 import 'package:gp_management/app.locator.dart';
 import 'package:gp_management/app.router.dart';
 import 'package:gp_management/model/info.dart';
+import 'package:gp_management/services/auth_service.dart';
 import 'package:gp_management/services/firestore_service.dart';
 import 'package:gp_management/services/user_service.dart';
 import 'package:stacked/stacked.dart';
@@ -9,6 +10,7 @@ import 'package:stacked_services/stacked_services.dart';
 class ViewItemsViewModel extends BaseViewModel {
   final _userService = locator<UserService>();
   final _navigatorService = locator<NavigationService>();
+  final _authService = locator<AuthService>();
   List<String> locations = [];
   bool loading = false;
   late Info info;
@@ -58,5 +60,11 @@ class ViewItemsViewModel extends BaseViewModel {
   navigateToRequestView() {
     _navigatorService.back();
     _navigatorService.navigateTo(Routes.requestAccessView);
+  }
+
+  logout() async {
+    await _authService.signOutFromGoogle();
+    _navigatorService.pushNamedAndRemoveUntil(Routes.splashView,
+        predicate: (route) => false);
   }
 }
