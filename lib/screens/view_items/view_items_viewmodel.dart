@@ -1,12 +1,14 @@
 import 'package:gp_management/app.locator.dart';
+import 'package:gp_management/app.router.dart';
 import 'package:gp_management/model/info.dart';
-import 'package:gp_management/model/jurisdictions.dart';
 import 'package:gp_management/services/firestore_service.dart';
 import 'package:gp_management/services/user_service.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class ViewItemsViewModel extends BaseViewModel {
   final _userService = locator<UserService>();
+  final _navigatorService = locator<NavigationService>();
   List<String> locations = [];
   bool loading = false;
   late Info info;
@@ -18,8 +20,9 @@ class ViewItemsViewModel extends BaseViewModel {
   init() async {
     setBusy(true);
     locations.clear();
-    _userService.userData!.jurisdictions
-        .forEach((element) => locations.add(element.name));
+    if (_userService.userData!.jurisdictions != null)
+      _userService.userData!.jurisdictions!
+          .forEach((element) => locations.add(element.name));
 
     if (locations.isNotEmpty) {
       currentLocation = locations[0];
@@ -41,7 +44,7 @@ class ViewItemsViewModel extends BaseViewModel {
   // }
 
   Future<void> fetchDataForJurisdiction() async {
-    String jurisdiction = _userService.userData!.jurisdictions
+    String jurisdiction = _userService.userData!.jurisdictions!
         .firstWhere((element) => element.name == currentLocation)
         .jurisdiction;
     loading = true;
@@ -50,5 +53,10 @@ class ViewItemsViewModel extends BaseViewModel {
     info = await firestoreService.getDataForJurisdiction(jurisdiction);
     loading = false;
     notifyListeners();
+  }
+
+  navigateToRequestView() {
+    _navigatorService.back();
+    _navigatorService.navigateTo(Routes.requestAccessView);
   }
 }

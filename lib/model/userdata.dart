@@ -12,13 +12,13 @@ String userDataToMap(UserData data) => json.encode(data.toMap());
 
 class UserData {
   UserData(
-      {required this.jurisdictions,
+      {this.jurisdictions,
       required this.email,
       required this.uid,
       required this.superuser,
       required this.name});
 
-  List<Jurisdiction> jurisdictions;
+  List<Jurisdiction>? jurisdictions;
   String email;
   String uid;
   bool superuser;
@@ -33,8 +33,9 @@ class UserData {
       name: json["name"]);
 
   Map<String, dynamic> toMap() => {
-        "jurisdictions":
-            List<dynamic>.from(jurisdictions.map((x) => x.toMap())),
+        "jurisdictions": jurisdictions != null
+            ? List<dynamic>.from(jurisdictions!.map((x) => x.toMap()))
+            : [],
         "email": email,
         "uid": uid,
         "superuser": superuser,

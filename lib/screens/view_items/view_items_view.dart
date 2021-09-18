@@ -33,6 +33,18 @@ class ViewItemsView extends StatelessWidget {
         Widget? child,
       ) {
         return Scaffold(
+          drawer: SafeArea(
+            child: Drawer(
+              child: Column(
+                children: [
+                  ListTile(
+                    onTap: model.navigateToRequestView,
+                    title: Text('Request Access'),
+                  )
+                ],
+              ),
+            ),
+          ),
           appBar: AppBar(
             title: Text(
               'GP Management',

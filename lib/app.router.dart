@@ -14,6 +14,7 @@ import 'screens/add_item/add_item_view.dart';
 import 'screens/edit_item/edit_item_view.dart';
 import 'screens/qr/qr_scan_details.dart';
 import 'screens/qr/qr_view.dart';
+import 'screens/request_access/request_access_view.dart';
 import 'screens/splash/splash_view.dart';
 import 'screens/superuser_view/superuser_items_view.dart';
 import 'screens/view_items/view_items_view.dart';
@@ -25,6 +26,7 @@ class Routes {
   static const String viewItemsView = '/view-items-view';
   static const String superUserItemsView = '/super-user-items-view';
   static const String qrScanInfoScreen = '/qr-scan-info-screen';
+  static const String requestAccessView = '/request-access-view';
   static const String splashView = '/';
   static const all = <String>{
     addItemView,
@@ -33,6 +35,7 @@ class Routes {
     viewItemsView,
     superUserItemsView,
     qrScanInfoScreen,
+    requestAccessView,
     splashView,
   };
 }
@@ -47,6 +50,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.viewItemsView, page: ViewItemsView),
     RouteDef(Routes.superUserItemsView, page: SuperUserItemsView),
     RouteDef(Routes.qrScanInfoScreen, page: QrScanInfoScreen),
+    RouteDef(Routes.requestAccessView, page: RequestAccessView),
     RouteDef(Routes.splashView, page: SplashView),
   ];
   @override
@@ -104,6 +108,12 @@ class StackedRouter extends RouterBase {
           key: args.key,
           code: args.code,
         ),
+        settings: data,
+      );
+    },
+    RequestAccessView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const RequestAccessView(),
         settings: data,
       );
     },

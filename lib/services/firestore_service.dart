@@ -92,9 +92,13 @@ class FirestoreService {
           .doc(uid)
           .get();
 
-  Future<void> createNewRequest({required Request request}) async {
+  Future<void> createNewRequest({required List<Request> requests}) async {
+    List<Map<String, dynamic>> requestMap = [];
+    requests.forEach((element) {
+      requestMap.add(element.toMap());
+    });
     await firestoreInstance
-        .collection('users')
+        .collection('requests')
         .withConverter<Requests>(
             fromFirestore: (snapshot, _) => Requests.fromMap(snapshot.data()!),
             toFirestore: (model, _) => model.toMap())
@@ -102,7 +106,7 @@ class FirestoreService {
         .update(
       {
         "requests": FieldValue.arrayUnion(
-          [request.toMap()],
+          requestMap,
         ),
       },
     );
