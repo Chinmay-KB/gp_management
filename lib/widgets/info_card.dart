@@ -6,152 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:gp_management/model/info.dart';
-import 'package:gp_management/screens/add_item/add_item_view.dart';
 import 'package:gp_management/screens/edit_item/edit_item_view.dart';
-import 'package:gp_management/screens/qr/qr_view.dart';
-import 'package:gp_management/screens/superuser_view/superuser_items_viewmodel.dart';
-import 'package:gp_management/services/user_service.dart';
-import 'package:gp_management/widgets/side_drawer.dart';
+import 'package:gp_management/screens/view_items/view_items_viewmodel.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:stacked/stacked.dart';
-
-import '../../app.locator.dart';
-
-class SuperUserItemsView extends StatelessWidget {
-  SuperUserItemsView({Key? key}) : super(key: key);
-  final _userService = locator<UserService>();
-
-  @override
-  Widget build(BuildContext context) {
-    return ViewModelBuilder<SuperUserItemsViewModel>.reactive(
-      viewModelBuilder: () => SuperUserItemsViewModel(),
-      onModelReady: (model) => model.init(),
-      builder: (
-        BuildContext context,
-        SuperUserItemsViewModel model,
-        Widget? child,
-      ) {
-        return Scaffold(
-          drawer: SafeArea(
-              child: SideDrawer(
-                  isSuperUser: true, onLogout: model.logout, onAbout: () {})),
-          appBar: AppBar(
-            title: Text(
-              'GP Management',
-              // style: TextStyle(
-              //   color: Colors.white,
-              // ),
-            ),
-            centerTitle: true,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: GestureDetector(
-                  child: Icon(
-                    Icons.qr_code,
-                    size: 28,
-                  ),
-                  onTap: () => Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => QrView()))
-                      .then((value) => model.fetchDataForJurisdiction()),
-                ),
-              ),
-              GestureDetector(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.add,
-                    size: 32,
-                  ),
-                ),
-                onTap: () => Navigator.of(context)
-                    .push(
-                        MaterialPageRoute(builder: (context) => AddItemView()))
-                    .then((value) => model.fetchDataForJurisdiction()),
-              )
-            ],
-          ),
-          body: model.isBusy
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Column(
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DropdownButtonFormField<String>(
-                        value: model.currentLocation,
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 2, horizontal: 9),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                            labelText: "Location"),
-                        onChanged: (salutation) {
-                          model.currentLocation = salutation!;
-                          model.fetchDataForJurisdiction();
-                        },
-                        validator: (value) =>
-                            value == null ? 'Choose a location' : null,
-                        items: model.locations
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    Expanded(
-                      child: model.loading
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : model.info.data.length == 0
-                              ? Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Icon(
-                                        Icons.warning_rounded,
-                                        size: 48,
-                                        color: Theme.of(context).accentColor,
-                                      ),
-                                      Text('No items found for this location')
-                                    ],
-                                  ),
-                                )
-                              : ListView.builder(
-                                  itemBuilder: (context, index) {
-                                    return InfoCard(
-                                      index: index,
-                                      model: model,
-                                    );
-                                  },
-                                  itemCount: model.info.data.length,
-                                ),
-                    )
-                  ],
-                ),
-        );
-      },
-    );
-  }
-}
 
 class InfoCard extends StatelessWidget {
-  InfoCard({Key? key, required this.index, required this.model})
+  InfoCard(
+      {Key? key,
+      required this.index,
+      required this.model,
+      this.isSuperUser = false})
       : super(key: key);
-  final SuperUserItemsViewModel model;
+  final ViewItemsViewModel model;
   final int index;
   final GlobalKey globalKey = new GlobalKey();
+  bool isSuperUser;
 
   Future<void> _captureAndSharePng() async {
     try {
@@ -290,32 +162,34 @@ class InfoCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  TextButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context)
-                            .push(
-                              MaterialPageRoute(
-                                builder: (context) => EditItemView(
-                                    prefill: data,
-                                    info: model.info,
-                                    index: index),
-                              ),
-                            )
-                            .then((value) => model.fetchDataForJurisdiction());
-                      },
-                      style: ButtonStyle(
-                          padding:
-                              MaterialStateProperty.all<EdgeInsetsGeometry>(
-                                  EdgeInsets.all(8)),
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                            Color(0xff556FB5),
-                          ),
-                          foregroundColor: MaterialStateProperty.all<Color>(
-                            Colors.white,
-                          )),
-                      icon: Icon(Icons.edit),
-                      label: Text('Edit data')),
+                  if (isSuperUser)
+                    TextButton.icon(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context)
+                              .push(
+                                MaterialPageRoute(
+                                  builder: (context) => EditItemView(
+                                      prefill: data,
+                                      info: model.info,
+                                      index: index),
+                                ),
+                              )
+                              .then(
+                                  (value) => model.fetchDataForJurisdiction());
+                        },
+                        style: ButtonStyle(
+                            padding:
+                                MaterialStateProperty.all<EdgeInsetsGeometry>(
+                                    EdgeInsets.all(8)),
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              Color(0xff556FB5),
+                            ),
+                            foregroundColor: MaterialStateProperty.all<Color>(
+                              Colors.white,
+                            )),
+                        icon: Icon(Icons.edit),
+                        label: Text('Edit data')),
                   TextButton.icon(
                     onPressed: () {
                       _captureAndSharePng();

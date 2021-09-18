@@ -1,10 +1,18 @@
 import 'package:gp_management/app.locator.dart';
+import 'package:gp_management/app.router.dart';
 import 'package:gp_management/model/info.dart';
 import 'package:gp_management/model/jurisdictions.dart';
+import 'package:gp_management/services/auth_service.dart';
 import 'package:gp_management/services/firestore_service.dart';
+import 'package:gp_management/services/user_service.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class SuperUserItemsViewModel extends BaseViewModel {
+  final _navigatorService = locator<NavigationService>();
+  final _userService = locator<UserService>();
+  final _authService = locator<AuthService>();
+
   late Jurisdictions jurisdictions;
   List<String> locations = [];
   bool loading = false;
@@ -35,5 +43,11 @@ class SuperUserItemsViewModel extends BaseViewModel {
     info = await firestoreService.getDataForJurisdiction(jurisdiction);
     loading = false;
     notifyListeners();
+  }
+
+  logout() async {
+    await _authService.signOutFromGoogle();
+    _navigatorService.pushNamedAndRemoveUntil(Routes.splashView,
+        predicate: (route) => false);
   }
 }

@@ -56,8 +56,17 @@ class SplashViewModel extends BaseViewModel {
               uid: _userData.uid,
             ));
       }
-      _navigationService.pushNamedAndRemoveUntil(Routes.viewItemsView,
-          predicate: (route) => false);
+      {
+        final _data =
+            (await _firebaseService.getUserData(uid: _userData.uid)).data();
+        if (_data!.superuser) {
+          _navigationService.pushNamedAndRemoveUntil(Routes.superUserItemsView,
+              predicate: (route) => false);
+        } else {
+          _navigationService.pushNamedAndRemoveUntil(Routes.viewItemsView,
+              predicate: (route) => false);
+        }
+      }
     } else {
       _snackbarService.showSnackbar(message: 'Error');
     }
