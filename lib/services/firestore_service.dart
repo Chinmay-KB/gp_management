@@ -8,25 +8,37 @@ import 'package:gp_management/model/userdata.dart';
 
 class FirestoreService {
   var firestoreInstance = FirebaseFirestore.instance;
+  final COLLECTION_DATA = 'data';
+  final COLLECTION_REQUESTS = 'requests';
+  final COLLECTION_UTIL = 'util';
+  final COLLECTION_USERS = 'users';
+
+  final DOC_PENDING_REQ = 'pending_requests';
+  final DOC_JURISDICTION_DATA = 'jurisdiction_data';
 
   Future<Info> getDataForJurisdiction(String jurisdiction) async {
-    var firebaseDb =
-        await firestoreInstance.collection('data').doc(jurisdiction).get();
+    var firebaseDb = await firestoreInstance
+        .collection(COLLECTION_DATA)
+        .doc(jurisdiction)
+        .get();
     return infoFromJson(json.encode(firebaseDb.data()));
   }
 
   Future<Jurisdictions> getJurisdictionList() async {
     var firebaseDb = await firestoreInstance
-        .collection('util')
-        .doc('jurisdiction_data')
+        .collection(COLLECTION_UTIL)
+        .doc(DOC_JURISDICTION_DATA)
         .get();
     return jurisdictionsFromJson(json.encode(firebaseDb.data()));
   }
 
   // Add data
   Future<bool> addData(String jurisdiction, Datum datum) async {
-    await firestoreInstance.collection('data').doc(jurisdiction).update({
-      'data': FieldValue.arrayUnion([datum.toJson()])
+    await firestoreInstance
+        .collection(COLLECTION_DATA)
+        .doc(jurisdiction)
+        .update({
+      COLLECTION_DATA: FieldValue.arrayUnion([datum.toJson()])
     });
     return true;
   }
@@ -34,7 +46,7 @@ class FirestoreService {
   // Edit data
   Future<bool> editData(String jurisdiction, Info infoList) async {
     await firestoreInstance
-        .collection('data')
+        .collection(COLLECTION_DATA)
         .doc(jurisdiction)
         .update(infoList.toJson());
     return true;
@@ -46,8 +58,10 @@ class FirestoreService {
       String jurisdiction = jurisdictions.jurisdictions
           .firstWhere((element) => element.name == location)
           .jurisdiction;
-      final firebaseDb =
-          await firestoreInstance.collection('data').doc(jurisdiction).get();
+      final firebaseDb = await firestoreInstance
+          .collection(COLLECTION_DATA)
+          .doc(jurisdiction)
+          .get();
       final dataList = infoFromJson(json.encode(firebaseDb.data()));
       bool found = false;
       Datum datum = dataList.data.firstWhere((element) {
@@ -57,15 +71,16 @@ class FirestoreService {
         }
         return false;
       }, orElse: () => Datum());
-      return {'found': found, 'data': datum.toJson()};
+      return {'found': found, COLLECTION_DATA: datum.toJson()};
     } on Exception catch (_) {
-      return {'found': false, 'data': Datum()};
+      return {'found': false, COLLECTION_DATA: Datum()};
     }
   }
 
   /// Check if the user exists on the database or not.
   Future<bool> checkUserExists(String uid) async {
-    final _doc = await firestoreInstance.collection('users').doc(uid).get();
+    final _doc =
+        await firestoreInstance.collection(COLLECTION_USERS).doc(uid).get();
     return _doc.exists;
   }
 
@@ -73,7 +88,7 @@ class FirestoreService {
   Future<void> createNewUser(
       {required String uid, required UserData userData}) async {
     await firestoreInstance
-        .collection('users')
+        .collection(COLLECTION_USERS)
         .withConverter<UserData>(
             fromFirestore: (snapshot, _) => UserData.fromMap(snapshot.data()!),
             toFirestore: (model, _) => model.toMap())
@@ -84,7 +99,7 @@ class FirestoreService {
   /// Creates a new user document for a new user
   Future<DocumentSnapshot<UserData>> getUserData({required String uid}) async =>
       firestoreInstance
-          .collection('users')
+          .collection(COLLECTION_USERS)
           .withConverter<UserData>(
               fromFirestore: (snapshot, _) =>
                   UserData.fromMap(snapshot.data()!),
@@ -98,11 +113,11 @@ class FirestoreService {
       requestMap.add(element.toMap());
     });
     await firestoreInstance
-        .collection('requests')
+        .collection(COLLECTION_REQUESTS)
         .withConverter<Requests>(
             fromFirestore: (snapshot, _) => Requests.fromMap(snapshot.data()!),
             toFirestore: (model, _) => model.toMap())
-        .doc('pending_requests')
+        .doc(DOC_PENDING_REQ)
         .update(
       {
         "requests": FieldValue.arrayUnion(
@@ -112,33 +127,47 @@ class FirestoreService {
     );
   }
 
-  Future<void> removePendingRequest({required Request request}) async {
+  Future<void> removePendingRequest({required List<Request> requests}) async {
+    List<Map<String, dynamic>> requestMap = [];
+    requests.forEach((element) {
+      requestMap.add(element.toMap());
+    });
     await firestoreInstance
-        .collection('users')
+        .collection(COLLECTION_REQUESTS)
         .withConverter<Requests>(
             fromFirestore: (snapshot, _) => Requests.fromMap(snapshot.data()!),
             toFirestore: (model, _) => model.toMap())
-        .doc('pending_requests')
+        .doc(DOC_PENDING_REQ)
         .update(
       {
         "requests": FieldValue.arrayRemove(
-          [request.toMap()],
+          requestMap,
         ),
       },
     );
   }
 
+  Future<DocumentSnapshot<Requests>> fetchPendingRequests() async =>
+      await firestoreInstance
+          .collection(COLLECTION_REQUESTS)
+          .withConverter<Requests>(
+              fromFirestore: (snapshot, _) =>
+                  Requests.fromMap(snapshot.data()!),
+              toFirestore: (model, _) => model.toMap())
+          .doc(DOC_PENDING_REQ)
+          .get();
+
   /// Creates a new user document for a new user
   Future<void> acceptUserRequest(
-      {required String uid, required String jurisdiction}) async {
+      {required String uid, required Jurisdiction jurisdiction}) async {
     await firestoreInstance
-        .collection('users')
+        .collection(COLLECTION_USERS)
         .withConverter<UserData>(
             fromFirestore: (snapshot, _) => UserData.fromMap(snapshot.data()!),
             toFirestore: (model, _) => model.toMap())
         .doc(uid)
         .update({
-      'jurisdiction': FieldValue.arrayUnion([jurisdiction])
+      'jurisdictions': FieldValue.arrayUnion([jurisdiction.toMap()])
     });
   }
 }

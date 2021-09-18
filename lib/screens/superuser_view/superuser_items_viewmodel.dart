@@ -50,4 +50,9 @@ class SuperUserItemsViewModel extends BaseViewModel {
     _navigatorService.pushNamedAndRemoveUntil(Routes.splashView,
         predicate: (route) => false);
   }
+
+  navigateToPendingRequests() {
+    _navigatorService.back();
+    _navigatorService.navigateTo(Routes.pendingRequestsView);
+  }
 }

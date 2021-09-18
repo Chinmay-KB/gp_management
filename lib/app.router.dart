@@ -12,6 +12,7 @@ import 'package:stacked/stacked.dart';
 import 'model/info.dart';
 import 'screens/add_item/add_item_view.dart';
 import 'screens/edit_item/edit_item_view.dart';
+import 'screens/pending_requests/pending_requests_view.dart';
 import 'screens/qr/qr_scan_details.dart';
 import 'screens/qr/qr_view.dart';
 import 'screens/request_access/request_access_view.dart';
@@ -27,6 +28,7 @@ class Routes {
   static const String superUserItemsView = '/super-user-items-view';
   static const String qrScanInfoScreen = '/qr-scan-info-screen';
   static const String requestAccessView = '/request-access-view';
+  static const String pendingRequestsView = '/pending-requests-view';
   static const String splashView = '/';
   static const all = <String>{
     addItemView,
@@ -36,6 +38,7 @@ class Routes {
     superUserItemsView,
     qrScanInfoScreen,
     requestAccessView,
+    pendingRequestsView,
     splashView,
   };
 }
@@ -51,6 +54,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.superUserItemsView, page: SuperUserItemsView),
     RouteDef(Routes.qrScanInfoScreen, page: QrScanInfoScreen),
     RouteDef(Routes.requestAccessView, page: RequestAccessView),
+    RouteDef(Routes.pendingRequestsView, page: PendingRequestsView),
     RouteDef(Routes.splashView, page: SplashView),
   ];
   @override
@@ -114,6 +118,12 @@ class StackedRouter extends RouterBase {
     RequestAccessView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const RequestAccessView(),
+        settings: data,
+      );
+    },
+    PendingRequestsView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const PendingRequestsView(),
         settings: data,
       );
     },

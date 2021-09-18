@@ -6,19 +6,26 @@ class SideDrawer extends StatelessWidget {
     required this.onLogout,
     required this.onAbout,
     this.onRequestAccess,
+    this.onViewPendingRequests,
     Key? key,
   }) : super(key: key);
   bool isSuperUser;
   VoidCallback? onRequestAccess;
   VoidCallback onLogout;
   VoidCallback onAbout;
+  VoidCallback? onViewPendingRequests;
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Column(
         children: [
-          if (!isSuperUser)
+          if (isSuperUser)
+            ListTile(
+              onTap: onViewPendingRequests,
+              title: Text('View Pending Requests'),
+            )
+          else
             ListTile(
               onTap: onRequestAccess,
               title: Text('Request Jurisdiction Access'),

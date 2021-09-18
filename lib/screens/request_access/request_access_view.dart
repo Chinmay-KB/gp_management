@@ -32,13 +32,14 @@ class RequestAccessView extends StatelessWidget {
               : ListView.builder(
                   itemCount: model.locations.length,
                   itemBuilder: (context, index) => CheckboxListTile(
-                        selected: model.locations[index].isSelected,
-                        title: Text(model.locations[index].jurisdiction.name),
-                        onChanged: (bool? value) {
-                          model.toggleSelection(index);
-                        },
-                        value: model.locations[index].isSelected,
-                      )),
+                    selected: model.locations[index].isSelected,
+                    title: Text(model.locations[index].jurisdiction.name),
+                    onChanged: (bool? value) {
+                      model.toggleSelection(index);
+                    },
+                    value: model.locations[index].isSelected,
+                  ),
+                ),
         );
       },
     );

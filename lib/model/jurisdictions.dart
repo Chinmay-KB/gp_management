@@ -28,31 +28,36 @@ class Jurisdictions {
 }
 
 class Jurisdiction {
-  Jurisdiction({this.access, required this.jurisdiction, required this.name});
+  Jurisdiction(
+      {
+      // this.access,
+      required this.jurisdiction,
+      required this.name});
 
-  List<String>? access;
+  // List<String>? access;
   String jurisdiction;
   String name;
 
   factory Jurisdiction.fromJson(Map<String, dynamic> json) => Jurisdiction(
-      access: List<String>.from(json["access"].map((x) => x)),
+      // access: List<String>.from(json["access"].map((x) => x)),
       jurisdiction: json["jurisdiction"],
       name: json["name"]);
 
   Map<String, dynamic> toJson() => {
-        "access": List<dynamic>.from(access!.map((x) => x)),
+        // "access": List<dynamic>.from(access!.map((x) => x)),
         "jurisdiction": jurisdiction,
         "name": name
       };
 
   factory Jurisdiction.fromMap(Map<String, dynamic> json) => Jurisdiction(
-        access: List<String>.from(json["access"].map((x) => x)),
+        // access: List<String>.from(json["access"].map((x) => x)),
         jurisdiction: json["jurisdiction"],
         name: json["name"],
       );
 
   Map<String, dynamic> toMap() => {
-        "access": List<dynamic>.from(access!.map((x) => x)),
+        // "access":
+        //     access != null ? List<dynamic>.from(access!.map((x) => x)) : [],
         "jurisdiction": jurisdiction,
         "name": name,
       };

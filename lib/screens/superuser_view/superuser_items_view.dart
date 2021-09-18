@@ -37,7 +37,11 @@ class SuperUserItemsView extends StatelessWidget {
         return Scaffold(
           drawer: SafeArea(
               child: SideDrawer(
-                  isSuperUser: true, onLogout: model.logout, onAbout: () {})),
+            isSuperUser: true,
+            onLogout: model.logout,
+            onAbout: () {},
+            onViewPendingRequests: model.navigateToPendingRequests,
+          )),
           appBar: AppBar(
             title: Text(
               'GP Management',
