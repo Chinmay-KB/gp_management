@@ -38,6 +38,7 @@ dependencies:
   google_fonts: ^2.1.0
   uuid: ^3.0.4
   google_sign_in: ^5.1.0
+  stringr: ^0.0.2-prerelease
 
 
 

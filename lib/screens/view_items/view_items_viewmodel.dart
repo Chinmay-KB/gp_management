@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:gp_management/app.locator.dart';
 import 'package:gp_management/app.router.dart';
 import 'package:gp_management/model/info.dart';
@@ -13,15 +15,21 @@ class ViewItemsViewModel extends BaseViewModel {
   final _authService = locator<AuthService>();
   List<String> locations = [];
   bool loading = false;
-  late Info info;
-  late String currentLocation;
-  late int jurisdictionCount;
+  Info? info;
+  String? currentLocation;
+  int? jurisdictionCount;
 
-  final firestoreService = locator<FirestoreService>();
+  final _firestoreService = locator<FirestoreService>();
+  reset() {
+    locations.clear();
+    info = null;
+    currentLocation = null;
+    jurisdictionCount = null;
+  }
 
   init() async {
     setBusy(true);
-    locations.clear();
+    reset();
     if (_userService.userData!.jurisdictions != null)
       _userService.userData!.jurisdictions!
           .forEach((element) => locations.add(element.name));
@@ -52,7 +60,7 @@ class ViewItemsViewModel extends BaseViewModel {
     loading = true;
     notifyListeners();
     print('Jurisdiction got is $jurisdiction');
-    info = await firestoreService.getDataForJurisdiction(jurisdiction);
+    info = await _firestoreService.getDataForJurisdiction(jurisdiction);
     loading = false;
     notifyListeners();
   }
@@ -66,5 +74,13 @@ class ViewItemsViewModel extends BaseViewModel {
     await _authService.signOutFromGoogle();
     _navigatorService.pushNamedAndRemoveUntil(Routes.splashView,
         predicate: (route) => false);
+  }
+
+  refresh() async {
+    log(_userService.userData!.email);
+    _userService.userData =
+        (await _firestoreService.getUserData(uid: _userService.userData!.uid))
+            .data();
+    await init();
   }
 }

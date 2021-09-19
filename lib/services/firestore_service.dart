@@ -170,4 +170,18 @@ class FirestoreService {
       'jurisdictions': FieldValue.arrayUnion([jurisdiction.toMap()])
     });
   }
+
+  Future<void> createNewJurisdiction(
+      {required Jurisdiction jurisdiction}) async {
+    await firestoreInstance
+        .collection(COLLECTION_UTIL)
+        .doc(DOC_JURISDICTION_DATA)
+        .update({
+      'jurisdictions': FieldValue.arrayUnion([jurisdiction.toMap()])
+    });
+    await firestoreInstance
+        .collection(COLLECTION_DATA)
+        .doc(jurisdiction.jurisdiction)
+        .set({'data': []});
+  }
 }

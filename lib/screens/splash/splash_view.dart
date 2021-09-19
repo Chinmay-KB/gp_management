@@ -72,6 +72,13 @@ class SplashView extends StatelessWidget {
                       ),
                     ),
                   )
+                else
+                  Align(
+                    alignment: Alignment(0, 0.8),
+                    child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Colors.white)),
+                  )
               ],
             ),
           ),

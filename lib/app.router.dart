@@ -9,6 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
+import 'add_jurisdiction/add_jurisdiction_view.dart';
 import 'model/info.dart';
 import 'screens/add_item/add_item_view.dart';
 import 'screens/edit_item/edit_item_view.dart';
@@ -29,6 +30,7 @@ class Routes {
   static const String qrScanInfoScreen = '/qr-scan-info-screen';
   static const String requestAccessView = '/request-access-view';
   static const String pendingRequestsView = '/pending-requests-view';
+  static const String addJurisdictionView = '/add-jurisdiction-view';
   static const String splashView = '/';
   static const all = <String>{
     addItemView,
@@ -39,6 +41,7 @@ class Routes {
     qrScanInfoScreen,
     requestAccessView,
     pendingRequestsView,
+    addJurisdictionView,
     splashView,
   };
 }
@@ -55,6 +58,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.qrScanInfoScreen, page: QrScanInfoScreen),
     RouteDef(Routes.requestAccessView, page: RequestAccessView),
     RouteDef(Routes.pendingRequestsView, page: PendingRequestsView),
+    RouteDef(Routes.addJurisdictionView, page: AddJurisdictionView),
     RouteDef(Routes.splashView, page: SplashView),
   ];
   @override
@@ -124,6 +128,12 @@ class StackedRouter extends RouterBase {
     PendingRequestsView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const PendingRequestsView(),
+        settings: data,
+      );
+    },
+    AddJurisdictionView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const AddJurisdictionView(),
         settings: data,
       );
     },

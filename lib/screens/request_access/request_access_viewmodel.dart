@@ -21,24 +21,26 @@ class RequestAccessViewModel extends BaseViewModel {
     setBusy(true);
     final _allJurisdictions = await _firestoreService.getJurisdictionList();
     final _userAllowedJurisdictions = _userService.userData!.jurisdictions;
-    _allJurisdictions.jurisdictions.forEach((allElement) {
-      bool _flag = false;
-      if (_userAllowedJurisdictions != null) {
-        _userAllowedJurisdictions.forEach((userElement) {
-          if (userElement.name == allElement.name && !_flag) {
-            _flag = true;
-          }
-          if (!_flag) {
-            locations.add(
-                JurisdictionPick(jurisdiction: allElement, isSelected: false));
-            locations.add(
-                JurisdictionPick(jurisdiction: allElement, isSelected: false));
-            locations.add(
-                JurisdictionPick(jurisdiction: allElement, isSelected: false));
-          }
-        });
-      }
-    });
+    if (_userAllowedJurisdictions!.isNotEmpty)
+      _allJurisdictions.jurisdictions.forEach((allElement) {
+        bool _flag = false;
+        if (_userAllowedJurisdictions != null) {
+          _userAllowedJurisdictions.forEach((userElement) {
+            if (userElement.name == allElement.name && !_flag) {
+              _flag = true;
+            }
+            if (!_flag) {
+              locations.add(JurisdictionPick(
+                  jurisdiction: allElement, isSelected: false));
+            }
+          });
+        }
+      });
+    else
+      _allJurisdictions.jurisdictions.forEach((element) {
+        locations
+            .add(JurisdictionPick(jurisdiction: element, isSelected: false));
+      });
     setBusy(false);
   }
 

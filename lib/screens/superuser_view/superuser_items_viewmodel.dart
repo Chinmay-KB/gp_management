@@ -55,4 +55,11 @@ class SuperUserItemsViewModel extends BaseViewModel {
     _navigatorService.back();
     _navigatorService.navigateTo(Routes.pendingRequestsView);
   }
+
+  navigateToCreateJurisdiction() {
+    _navigatorService.back();
+    _navigatorService.navigateTo(Routes.addJurisdictionView)!.then((value) {
+      init();
+    });
+  }
 }

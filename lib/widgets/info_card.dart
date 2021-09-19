@@ -32,7 +32,7 @@ class InfoCard extends StatelessWidget {
       var image = await boundary.toImage();
       ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
       Uint8List pngBytes = byteData!.buffer.asUint8List();
-      Datum data = model.info.data[index];
+      Datum data = model.info!.data[index];
       final tempDir = await getTemporaryDirectory();
       final dirPath = '${tempDir.path}/${data.location}_${data.id}.png';
       final file = await new File(dirPath).create();
@@ -53,7 +53,7 @@ class InfoCard extends StatelessWidget {
       var image = await boundary.toImage();
       ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
       Uint8List pngBytes = byteData!.buffer.asUint8List();
-      Datum data = model.info.data[index];
+      Datum data = model.info!.data[index];
 
       final directory = await getExternalStorageDirectory();
 
@@ -72,7 +72,7 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = model.info.data[index];
+    final data = model.info!.data[index];
     final purchaseDateTime =
         DateTime.fromMillisecondsSinceEpoch(int.parse(data.purchase!));
     final purchase =
@@ -171,7 +171,7 @@ class InfoCard extends StatelessWidget {
                                 MaterialPageRoute(
                                   builder: (context) => EditItemView(
                                       prefill: data,
-                                      info: model.info,
+                                      info: model.info!,
                                       index: index),
                                 ),
                               )

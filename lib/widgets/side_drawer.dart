@@ -7,6 +7,7 @@ class SideDrawer extends StatelessWidget {
     required this.onAbout,
     this.onRequestAccess,
     this.onViewPendingRequests,
+    this.createNewJurisdiction,
     Key? key,
   }) : super(key: key);
   bool isSuperUser;
@@ -14,6 +15,7 @@ class SideDrawer extends StatelessWidget {
   VoidCallback onLogout;
   VoidCallback onAbout;
   VoidCallback? onViewPendingRequests;
+  VoidCallback? createNewJurisdiction;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,13 @@ class SideDrawer extends StatelessWidget {
           ListTile(
             onTap: onLogout,
             title: Text('Logout'),
-          )
+          ),
+          Divider(),
+          if (isSuperUser)
+            ListTile(
+              onTap: createNewJurisdiction,
+              title: Text('Create new jurisdiction'),
+            )
         ],
       ),
     );

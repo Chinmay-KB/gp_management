@@ -64,6 +64,15 @@ class ViewItemsView extends StatelessWidget {
                       .then((value) => model.fetchDataForJurisdiction()),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: GestureDetector(
+                    child: Icon(
+                      Icons.refresh_rounded,
+                      size: 38,
+                    ),
+                    onTap: () => model.refresh()),
+              ),
             ],
           ),
           body: model.isBusy
@@ -106,7 +115,7 @@ class ViewItemsView extends StatelessWidget {
                               ? Center(
                                   child: CircularProgressIndicator(),
                                 )
-                              : model.info.data.length == 0
+                              : model.info!.data.length == 0
                                   ? Center(
                                       child: Column(
                                         mainAxisAlignment:
@@ -131,7 +140,7 @@ class ViewItemsView extends StatelessWidget {
                                           model: model,
                                         );
                                       },
-                                      itemCount: model.info.data.length,
+                                      itemCount: model.info!.data.length,
                                     ),
                         )
                       ],

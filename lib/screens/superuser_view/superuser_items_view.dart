@@ -41,6 +41,7 @@ class SuperUserItemsView extends StatelessWidget {
             onLogout: model.logout,
             onAbout: () {},
             onViewPendingRequests: model.navigateToPendingRequests,
+            createNewJurisdiction: model.navigateToCreateJurisdiction,
           )),
           appBar: AppBar(
             title: Text(

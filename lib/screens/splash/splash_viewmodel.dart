@@ -19,7 +19,7 @@ class SplashViewModel extends BaseViewModel {
 
   Future<void> init() async {
     setBusy(true);
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     isLoggedIn = _authService.checkLoggedIn();
     if (isLoggedIn) {
       final _uid = (await _authService.getUser())!.uid;
@@ -40,6 +40,7 @@ class SplashViewModel extends BaseViewModel {
 
   /// Handles login, and the respective navigation
   Future<void> onLogin() async {
+    setBusy(true);
     await _authService.signInwithGoogle();
     if (_authService.checkLoggedIn()) {
       final _userData = await _authService.getUser();
@@ -55,10 +56,19 @@ class SplashViewModel extends BaseViewModel {
               superuser: false,
               uid: _userData.uid,
             ));
+        _userService.userData = UserData(
+          email: _userData.email!,
+          name: _userData.displayName!,
+          jurisdictions: [],
+          superuser: false,
+          uid: _userData.uid,
+        );
       }
       {
         final _data =
             (await _firebaseService.getUserData(uid: _userData.uid)).data();
+        _userService.userData = _data;
+
         if (_data!.superuser) {
           _navigationService.pushNamedAndRemoveUntil(Routes.superUserItemsView,
               predicate: (route) => false);
